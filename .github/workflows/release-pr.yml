@@ -1,0 +1,57 @@
+name: Release PR Merge with Commits
+
+on:
+  pull_request:
+    types:
+      - closed
+
+jobs:
+  create_release:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Fetch PR details and commits
+        id: fetch_pr
+        run: |
+          PR_NUMBER=${{ github.event.pull_request.number }}
+          REPO=${{ github.repository }}
+
+          echo "PR Number: $PR_NUMBER"
+          echo "Repository: $REPO"
+
+          # Get PR title
+          PR_TITLE=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/pulls/$PR_NUMBER" | jq -r '.title')
+          echo "pr_title=$PR_TITLE" >> $GITHUB_OUTPUT
+
+          # Get all commit messages in the PR
+          COMMITS=$(curl -s -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$REPO/pulls/$PR_NUMBER/commits" | jq -r '.[].commit.message' | sed 's/^/- /')
+          echo "commit_messages<<EOF" >> $GITHUB_ENV
+          echo "$COMMITS" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Create tag
+        id: tag
+        run: |
+          TAG="v$(date +'%Y%m%d%H%M%S')"
+          git tag $TAG
+          git push origin $TAG
+          echo "tag_name=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release with PR Title and Commit Messages
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.tag.outputs.tag_name }}
+          body: |
+            ## ${{ steps.fetch_pr.outputs.pr_title }}
+
+            ### Commits included in
