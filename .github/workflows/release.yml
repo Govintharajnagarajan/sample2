@@ -1,9 +1,9 @@
 name: Release
 
 on:
-  pull_request:
-    types:
-      - closed  # Trigger when a PR is merged
+  push:
+    branches:
+      - main  # Change to your default branch name
 
 jobs:
   release:
@@ -23,5 +23,5 @@ jobs:
 
       - name: Run Semantic Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Token automatically provided by GitHub
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: npx semantic-release
