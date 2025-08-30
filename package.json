@@ -6,12 +6,13 @@
   "scripts": {
     "test": "echo \"No tests yet...\""
   },
-  "devDependencies": {
-    "semantic-release": "^21.0.0",
-    "@semantic-release/changelog": "^6.0.0",
-    "@semantic-release/commit-analyzer": "^9.0.0",
-    "@semantic-release/github": "^7.0.0",
-    "@semantic-release/git": "^10.0.0",
-    "@semantic-release/release-notes-generator": "^10.0.0"
+ "devDependencies": {
+  "semantic-release": "^17.0.0",
+  "@semantic-release/changelog": "^6.0.0",
+  "@semantic-release/commit-analyzer": "^9.0.0",
+  "@semantic-release/github": "^7.0.0",
+  "@semantic-release/git": "^10.0.0",
+  "@semantic-release/release-notes-generator": "^10.0.0"
   }
+
 }
