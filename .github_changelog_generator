@@ -1,0 +1,6 @@
+user: Govintharajnagarajan
+project: sample2
+future-release: unreleased
+exclude-labels: question,invalid,wontfix,duplicate
+enhancement-labels: enhancement,feature,feat
+bug-labels: bug,fix
